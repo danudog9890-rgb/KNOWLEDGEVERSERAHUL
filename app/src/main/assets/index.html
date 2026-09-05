@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050916">
+<meta name="description" content="KnowledgeVerse 2500 — futuristic online knowledge and quiz platform. Made by Rahul Singh.">
+<title>KnowledgeVerse 2500 • Rahul Singh</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{
+  --bg:#030713;--bg2:#071020;--glass:rgba(10,20,40,.62);--glass2:rgba(14,28,53,.78);
+  --line:rgba(146,190,255,.14);--text:#eef7ff;--muted:#93abc8;
+  --cyan:#5ee7ff;--violet:#9b7bff;--pink:#ff71d8;--green:#78ffd6;--danger:#ff6e8d;
+  --mx:0;--my:0;--gx:0;--gy:0;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{
+  margin:0;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh;overflow-x:hidden;
+  background:
+    radial-gradient(1000px 650px at calc(18% + var(--mx)*1px) calc(-10% + var(--my)*1px),rgba(155,123,255,.16),transparent 65%),
+    radial-gradient(900px 600px at calc(92% - var(--mx)*.7px) calc(12% - var(--my)*.7px),rgba(94,231,255,.12),transparent 62%),
+    linear-gradient(145deg,#02050e,#071120 52%,#030713);
+}
+button,input,select{font:inherit}
+button{color:inherit}
+a{color:inherit;text-decoration:none}
+canvas#stars{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-3}
+.noise{position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E")}
+.blob{position:fixed;border-radius:44% 56% 63% 37% / 37% 48% 52% 63%;filter:blur(4px);opacity:.24;z-index:-2;animation:morph 14s ease-in-out infinite alternate,drift 18s ease-in-out infinite alternate}
+.blob.one{width:360px;height:360px;background:linear-gradient(135deg,var(--violet),transparent);left:-140px;top:20vh}
+.blob.two{width:460px;height:460px;background:linear-gradient(135deg,var(--cyan),var(--pink));right:-220px;top:50vh;animation-delay:-6s}
+@keyframes morph{0%{border-radius:44% 56% 63% 37% / 37% 48% 52% 63%;transform:rotate(0)}50%{border-radius:68% 32% 38% 62% / 49% 61% 39% 51%}100%{border-radius:34% 66% 55% 45% / 62% 34% 66% 38%;transform:rotate(18deg)}}
+@keyframes drift{0%{translate:0 0}100%{translate:55px -70px}}
+.shell{width:min(1240px,calc(100% - 28px));margin:auto;padding:14px 0 44px}
+.glass{background:linear-gradient(145deg,rgba(19,37,69,.76),rgba(6,13,28,.64));border:1px solid var(--line);box-shadow:0 25px 70px rgba(0,0,0,.32),inset 0 1px rgba(255,255,255,.05);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.topbar{position:sticky;top:10px;z-index:50;border-radius:22px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-weight:950;letter-spacing:-1px;background:linear-gradient(135deg,var(--violet),var(--cyan));box-shadow:0 0 35px rgba(94,231,255,.24),inset 0 1px rgba(255,255,255,.45)}
+.brand h1{font-size:18px;margin:0}.brand small{color:var(--muted)}
+.nav{display:flex;gap:7px;align-items:center}
+.chip,.btn{border:1px solid var(--line);background:rgba(10,22,42,.74);border-radius:14px;padding:9px 12px;cursor:pointer;transition:.22s}
+.btn:hover,.chip:hover{border-color:rgba(94,231,255,.42);box-shadow:0 0 28px rgba(94,231,255,.08)}
+.btn.primary{border:0;background:linear-gradient(135deg,var(--violet),#546dff 55%,var(--cyan));font-weight:850;box-shadow:0 10px 35px rgba(84,109,255,.28)}
+.btn.ghost{background:transparent}.btn.danger{border-color:rgba(255,110,141,.24);color:#ffafc0}
+.hero{min-height:580px;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:22px;padding:50px 8px 26px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(94,231,255,.18);background:rgba(94,231,255,.06);font-size:11px;color:#c7f8ff}
+.pulse{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 0 0 rgba(120,255,214,.45);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(120,255,214,0)}100%{box-shadow:0 0 0 0 rgba(120,255,214,0)}}
+.hero h2{font-size:clamp(42px,7vw,86px);line-height:.92;letter-spacing:-4px;margin:18px 0;max-width:850px}
+.gradient-text{background:linear-gradient(90deg,#fff,var(--cyan),#cab9ff,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-size:16px;line-height:1.7;color:var(--muted);max-width:690px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.orbit-stage{position:relative;height:430px;perspective:1000px}
+.orbit-core{position:absolute;inset:50% auto auto 50%;width:142px;height:142px;translate:-50% -50%;border-radius:42% 58% 62% 38% / 47% 37% 63% 53%;background:radial-gradient(circle at 30% 25%,#fff 0 2%,var(--cyan) 3%,#6d5cff 34%,#0b1734 65%,#01040c 100%);box-shadow:0 0 80px rgba(94,231,255,.34);animation:morph 9s ease-in-out infinite alternate}
+.ring{position:absolute;left:50%;top:50%;border:1px solid rgba(124,207,255,.19);border-radius:50%;transform-style:preserve-3d}
+.r1{width:250px;height:250px;margin:-125px;transform:rotateX(68deg) rotateZ(8deg);animation:spin 18s linear infinite}
+.r2{width:340px;height:340px;margin:-170px;transform:rotateX(72deg) rotateZ(70deg);animation:spin 28s linear infinite reverse}
+.r3{width:420px;height:420px;margin:-210px;transform:rotateX(78deg) rotateZ(130deg);animation:spin 38s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+.orbital{position:absolute;min-width:96px;padding:9px 10px;border-radius:13px;background:rgba(7,15,31,.86);border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:10px;text-align:center}
+.orbital b{display:block;font-size:15px;margin-top:2px}.o1{left:5%;top:23%}.o2{right:0;top:16%}.o3{left:0;bottom:17%}.o4{right:4%;bottom:12%}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:36px 2px 13px}.section-head h3{margin:0;font-size:26px}.section-head p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.course{position:relative;padding:17px;min-height:180px;border-radius:22px;overflow:hidden;transform-style:preserve-3d;will-change:transform;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.course:hover{border-color:rgba(94,231,255,.35);box-shadow:0 24px 60px rgba(0,0,0,.35),0 0 30px rgba(94,231,255,.05)}
+.course::after{content:"";position:absolute;inset:auto -40% -80% 10%;height:180px;background:radial-gradient(circle,rgba(94,231,255,.18),transparent 70%);pointer-events:none}
+.icon{font-size:32px;filter:drop-shadow(0 8px 18px rgba(0,0,0,.25));transform:translateZ(24px)}
+.course h4{font-size:17px;margin:12px 0 6px;transform:translateZ(20px)}.course p{color:var(--muted);font-size:12px;line-height:1.5;margin:0;transform:translateZ(14px)}
+.course .meta{position:absolute;bottom:13px;left:17px;right:17px;display:flex;justify-content:space-between;color:#b9d8f6;font-size:10px}
+.dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{padding:15px;border-radius:18px}.stat b{font-size:28px;display:block}.stat span{font-size:10px;color:var(--muted)}
+.panel{border-radius:26px;padding:18px;margin-top:16px}
+#quizView,#resultView,#historyView{display:none}
+.quiz-layout{display:grid;grid-template-columns:1fr 310px;gap:14px}
+.qtop{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.progress{height:7px;border-radius:999px;background:#071020;overflow:hidden;margin:12px 0 18px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan));box-shadow:0 0 18px rgba(94,231,255,.45);transition:width .35s cubic-bezier(.2,.9,.2,1)}
+.qtext{font-size:clamp(20px,3.2vw,31px);line-height:1.24;font-weight:850;min-height:105px}
+.options{display:grid;gap:9px;margin-top:18px}
+.option{padding:14px 15px;text-align:left;border:1px solid var(--line);background:rgba(4,12,27,.72);border-radius:16px;cursor:pointer;transition:.2s}
+.option:hover{translate:4px 0;border-color:rgba(94,231,255,.38)}.option.selected{border-color:var(--cyan);background:linear-gradient(90deg,rgba(94,231,255,.10),rgba(155,123,255,.09))}
+.quiz-side{display:grid;gap:10px;align-content:start}.sidebox{padding:15px;border-radius:18px}.sidebox b{display:block;font-size:20px}.sidebox small{color:var(--muted)}
+.navq{display:flex;justify-content:space-between;gap:9px;margin-top:18px}
+.loading{display:none;position:fixed;inset:0;z-index:200;background:rgba(1,4,12,.82);backdrop-filter:blur(15px);place-items:center}.loading.show{display:grid}
+.loader-core{width:92px;height:92px;border-radius:50%;border:1px solid rgba(94,231,255,.22);position:relative;animation:spin 2s linear infinite}.loader-core:before,.loader-core:after{content:"";position:absolute;border-radius:50%;inset:12px;border:2px solid transparent;border-top-color:var(--cyan);animation:spin 1s linear infinite}.loader-core:after{inset:27px;border-top-color:var(--pink);animation-direction:reverse}
+.loading p{text-align:center;color:var(--muted)}
+.result-hero{text-align:center;padding:28px}.score-ring{width:160px;height:160px;border-radius:50%;margin:18px auto;display:grid;place-items:center;background:conic-gradient(var(--cyan) 0deg,#102039 0deg);position:relative}.score-ring:after{content:"";position:absolute;inset:16px;border-radius:50%;background:#07101f}.score-ring b{z-index:2;font-size:34px}
+.review{display:grid;gap:8px;margin-top:16px}.review-item{padding:13px;border-radius:15px;border:1px solid var(--line);background:rgba(5,13,28,.7);font-size:12px}.review-item.good{border-left:4px solid var(--green)}.review-item.bad{border-left:4px solid var(--danger)}
+.onboard{position:fixed;inset:0;background:rgba(1,4,12,.86);backdrop-filter:blur(20px);z-index:300;display:grid;place-items:center;padding:18px}.onboard.hidden{display:none}
+.onboard-card{width:min(760px,100%);min-height:440px;border-radius:34px;padding:28px;position:relative;overflow:hidden;transform-style:preserve-3d}.onboard-card .spatial{position:absolute;right:-50px;top:-60px;width:270px;height:270px;border-radius:50%;border:1px solid rgba(94,231,255,.16);box-shadow:inset 0 0 80px rgba(94,231,255,.07);animation:spin 22s linear infinite}
+.onboard h2{font-size:clamp(34px,6vw,62px);line-height:.95;letter-spacing:-2px;margin:70px 0 14px;max-width:550px}.onboard p{color:var(--muted);line-height:1.7;max-width:570px}
+.stepdots{display:flex;gap:6px;margin:22px 0}.stepdots i{width:22px;height:5px;border-radius:99px;background:#1b2c47}.stepdots i.active{background:linear-gradient(90deg,var(--violet),var(--cyan))}
+.liquid-transition{position:fixed;z-index:180;inset:0;pointer-events:none;clip-path:circle(0% at 50% 50%);background:radial-gradient(circle at 50% 50%,#243a75,var(--violet) 30%,#071020 65%,#030713);transition:clip-path .55s cubic-bezier(.8,0,.2,1)}.liquid-transition.active{clip-path:circle(110% at 50% 50%)}
+.toast{position:fixed;bottom:22px;left:50%;translate:-50% 20px;opacity:0;z-index:500;padding:11px 15px;border-radius:13px;background:#0d1b31;border:1px solid var(--line);transition:.25s;max-width:min(480px,90vw);text-align:center}.toast.show{opacity:1;translate:-50% 0}
+.footer{padding:36px 4px 8px;text-align:center;color:#6f89a6;font-size:10px;line-height:1.8}
+.footer a{text-decoration:underline;text-underline-offset:3px}
+.setting-row{display:flex;gap:8px;flex-wrap:wrap}.select{appearance:none;background:#081427;border:1px solid var(--line);color:var(--text);padding:10px 34px 10px 12px;border-radius:13px}
+.source-badge{font-size:10px;color:#b3d6f4;margin-top:9px}
+@media(max-width:980px){.hero{grid-template-columns:1fr;min-height:auto;padding-top:48px}.orbit-stage{height:360px}.grid{grid-template-columns:repeat(2,1fr)}.quiz-layout{grid-template-columns:1fr}.quiz-side{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.shell{width:min(100% - 18px,1240px)}.nav .chip:nth-child(1){display:none}.hero h2{letter-spacing:-2px}.grid{grid-template-columns:1fr}.dashboard{grid-template-columns:1fr 1fr}.quiz-side{grid-template-columns:1fr 1fr}.orbit-stage{height:300px}.r3{display:none}.onboard-card{padding:20px}.topbar{top:6px}.brand small{font-size:9px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* === CINEMATIC MOTION EXPANSION === */
+.cinema-dock{position:fixed;right:14px;bottom:16px;z-index:120}.cinema-btn{width:50px;height:50px;border-radius:17px;border:1px solid rgba(150,210,255,.2);background:rgba(8,18,38,.86);backdrop-filter:blur(18px);display:grid;place-items:center;cursor:pointer;box-shadow:0 14px 36px rgba(0,0,0,.3);font-size:21px}
+.cinema-menu{position:fixed;right:74px;bottom:16px;z-index:120;width:min(350px,calc(100vw - 100px));border-radius:24px;padding:12px;display:none;gap:8px}.cinema-menu.show{display:grid}.cinema-menu button{border:1px solid var(--line);background:rgba(7,16,33,.84);color:var(--text);padding:11px 12px;border-radius:14px;text-align:left;cursor:pointer}.cinema-menu button:hover{border-color:rgba(94,231,255,.4);transform:translateX(-4px)}
+.cinematic-stage{position:fixed;inset:0;z-index:170;pointer-events:none;overflow:hidden;display:none}.cinematic-stage.active{display:block}.cinematic-caption{position:absolute;left:50%;bottom:7vh;translate:-50% 0;padding:10px 15px;border-radius:999px;background:rgba(4,10,24,.68);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(16px);font-size:11px;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.eco-city{position:absolute;inset:0;background:radial-gradient(circle at 73% 14%,rgba(160,224,255,.25),transparent 24%),linear-gradient(#061124 0 56%,#09253c 56% 100%)}.eco-sun{position:absolute;right:10%;top:8%;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,#fffbd1 0 12%,#9cecff 42%,transparent 73%);animation:ecoPulse 4s ease-in-out infinite alternate}.eco-horizon{position:absolute;left:0;right:0;top:44%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 30px var(--cyan)}.eco-building{position:absolute;bottom:18%;width:7vw;min-width:50px;border-radius:18px 18px 4px 4px;background:linear-gradient(180deg,rgba(104,220,255,.25),rgba(10,38,55,.94));border:1px solid rgba(128,255,221,.2)}.eco-building:after{content:'';position:absolute;inset:12px 10px;background:repeating-linear-gradient(180deg,rgba(120,255,220,.55) 0 2px,transparent 2px 12px);opacity:.28;border-radius:8px}.eco-tree{position:absolute;bottom:18%;width:25px;height:70px;background:linear-gradient(#7dffd0,#218d6d);border-radius:70% 70% 30% 30%}.eco-lane{position:absolute;left:0;right:0;bottom:0;height:18%;background:linear-gradient(#0c192b,#040912)}.eco-lane:after{content:'';position:absolute;left:10%;right:10%;top:48%;height:2px;background:repeating-linear-gradient(90deg,#8eefff 0 22px,transparent 22px 44px)}.eco-orbit{position:absolute;right:3%;top:12%;width:44vw;height:18vw;border:1px solid rgba(180,220,255,.22);border-radius:50%;animation:orbitSweep 10s linear infinite}.eco-orbit:before{content:'✦';position:absolute;left:10%;top:-12px;color:white;font-size:24px;text-shadow:0 0 20px var(--cyan)}
+@keyframes ecoPulse{to{transform:scale(1.12)}}@keyframes orbitSweep{to{transform:rotate(360deg)}}
+.pastel-studio{position:absolute;inset:0;background:linear-gradient(135deg,#ffdff2,#d9efff 45%,#e9ddff);perspective:900px}.pastel-floor{position:absolute;left:-10%;right:-10%;bottom:-15%;height:55%;transform:rotateX(68deg);transform-origin:bottom;background:linear-gradient(90deg,rgba(255,255,255,.7),rgba(231,222,255,.75));border-top:1px solid white}.pastel-shape{position:absolute;border-radius:28px;box-shadow:0 24px 45px rgba(99,90,150,.18);animation:floatPastel 4s ease-in-out infinite alternate}.pastel-ball{border-radius:50%!important;background:radial-gradient(circle at 32% 25%,#fff,#ffb8dc 42%,#ca8fff)}.pastel-cube{background:linear-gradient(145deg,#c1f1ff,#9ed3ff);transform:rotate(18deg)}.pastel-pill{background:linear-gradient(145deg,#fff2ad,#ffbdca);border-radius:999px!important}@keyframes floatPastel{to{transform:translateY(-22px) rotate(13deg) scale(1.05)}}
+.holiday-pov{position:absolute;inset:0;background:radial-gradient(circle at 50% 16%,rgba(255,255,255,.22),transparent 18%),linear-gradient(#07132a,#0a2141 56%,#f3f8ff 56%)}.snowflake{position:absolute;top:-20px;color:white;opacity:.85;animation:snowFall linear forwards;text-shadow:0 0 10px white}.holiday-road{position:absolute;left:18%;right:18%;bottom:-8%;height:50%;background:linear-gradient(#bdd4e7,#eaf4fb);clip-path:polygon(42% 0,58% 0,100% 100%,0 100%)}.holiday-lights{position:absolute;left:8%;right:8%;top:20%;height:4px;background:linear-gradient(90deg,#ff6584,#ffe07c,#74f5df,#b48cff,#ff6584);box-shadow:0 0 22px white;animation:holidayTwinkle 1.2s steps(2) infinite}.pov-hands{position:absolute;left:50%;bottom:-10px;translate:-50% 0;width:380px;height:120px;border-radius:50% 50% 0 0;background:linear-gradient(#12223b,#08101f)}@keyframes snowFall{to{transform:translateY(110vh) rotate(360deg)}}@keyframes holidayTwinkle{50%{opacity:.45}}
+.digital-reveal{position:absolute;inset:0;background:#020611}.scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 28px var(--cyan);animation:scanDown 1.1s ease-in-out forwards}.digital-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(94,231,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(94,231,255,.08) 1px,transparent 1px);background-size:42px 42px;transform:perspective(600px) rotateX(64deg) scale(1.4);transform-origin:center bottom;animation:gridRise 1.3s cubic-bezier(.2,.8,.2,1) forwards}.reveal-logo{position:absolute;left:50%;top:50%;translate:-50% -50%;font-weight:950;font-size:clamp(50px,11vw,140px);letter-spacing:-8px;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;transform:scale(.45) rotateX(65deg);opacity:0;animation:logoReveal 1.1s .25s cubic-bezier(.16,1,.3,1) forwards}@keyframes scanDown{0%{top:0;opacity:0}10%{opacity:1}100%{top:100%;opacity:0}}@keyframes gridRise{from{opacity:0;translate:0 100px}to{opacity:1;translate:0 0}}@keyframes logoReveal{to{transform:scale(1) rotateX(0);opacity:1}}
+.takeoff-sky{position:absolute;inset:0;background:linear-gradient(#9fdfff,#eaf6ff 58%,#9ac07a 58%)}.runway{position:absolute;left:32%;right:32%;bottom:-4%;height:63%;background:linear-gradient(#333a44,#151a20);clip-path:polygon(37% 0,63% 0,100% 100%,0 100%)}.runway:after{content:'';position:absolute;left:48.5%;top:10%;bottom:0;width:3%;background:repeating-linear-gradient(#fff 0 25px,transparent 25px 55px)}.takeoff-plane{position:absolute;left:50%;bottom:12%;translate:-50% 0;font-size:70px;filter:drop-shadow(0 18px 16px rgba(0,0,0,.28));animation:takeoffPlane 1.8s cubic-bezier(.2,.7,.2,1) forwards}@keyframes takeoffPlane{0%{transform:scale(.7);bottom:10%}65%{transform:scale(1.25) rotate(-8deg);bottom:42%}100%{transform:scale(2.4) rotate(-12deg);bottom:115%;filter:blur(2px)}}
+.jet-scene{position:absolute;inset:0;background:linear-gradient(145deg,#061129,#0a2143 45%,#020510)}.jet{position:absolute;left:-25%;top:42%;font-size:92px;filter:drop-shadow(0 20px 20px rgba(0,0,0,.38));animation:jetFly 1.45s cubic-bezier(.24,.02,.35,1) forwards}.jet-trail{position:absolute;left:-20%;top:49%;height:3px;width:120%;background:linear-gradient(90deg,transparent,rgba(174,235,255,.1),white,transparent);filter:blur(1px);animation:trailSweep 1.5s ease-out forwards}@keyframes jetFly{0%{left:-25%;transform:scale(.55) rotate(-5deg)}55%{left:44%;transform:scale(1.22)}100%{left:120%;transform:scale(.7) rotate(6deg)}}@keyframes trailSweep{0%{opacity:0;transform:scaleX(.2)}30%{opacity:1}100%{opacity:0;transform:scaleX(1.3)}}
+.sonic-scene{position:absolute;inset:0;background:radial-gradient(circle,#102343,#050916 68%)}.sonic-ring{position:absolute;left:50%;top:50%;translate:-50% -50%;width:120px;height:120px;border-radius:50%;border:3px solid rgba(199,244,255,.9);box-shadow:0 0 50px rgba(94,231,255,.5);animation:sonicExpand 1.05s ease-out forwards}.sonic-ring.r2{animation-delay:.09s}.sonic-ring.r3{animation-delay:.18s}.sonic-word{position:absolute;left:50%;top:50%;translate:-50% -50%;font-weight:950;font-size:clamp(48px,10vw,130px);letter-spacing:-7px;color:white;text-shadow:0 0 30px rgba(94,231,255,.5);animation:sonicWord .9s .18s cubic-bezier(.12,.9,.2,1) both}@keyframes sonicExpand{0%{transform:scale(.15);opacity:1}100%{transform:scale(12);opacity:0}}@keyframes sonicWord{0%{transform:scale(.4);filter:blur(14px);opacity:0}100%{transform:scale(1);filter:blur(0);opacity:1}}
+@media(max-width:620px){.cinema-menu{right:12px;bottom:75px;width:calc(100vw - 24px)}.cinema-dock{right:12px;bottom:12px}}
+
+
+/* === COSMIC INTERACTION ENGINE / YEAR 2500 === */
+:root{--cosmic-blue:#48c8ff;--cosmic-purple:#7b3cff;--cosmic-violet:#b068ff;--accretion:#ffb133;--solar:#ff6a17}
+.cinematic-stage{background:#01030a}
+.cosmic-stars{position:absolute;inset:0;background:
+ radial-gradient(circle at 15% 20%,rgba(121,73,255,.25),transparent 20%),
+ radial-gradient(circle at 80% 30%,rgba(55,196,255,.18),transparent 24%),
+ radial-gradient(circle at 55% 70%,rgba(129,61,255,.18),transparent 28%),#02030d;overflow:hidden}
+.cosmic-stars:before,.cosmic-stars:after{content:"";position:absolute;inset:-20%;background-image:
+ radial-gradient(#fff 0 1px,transparent 1.5px),radial-gradient(#8bdcff 0 1px,transparent 1.4px);background-size:53px 53px,89px 89px;background-position:0 0,17px 31px;opacity:.65;animation:starDrift 5s linear infinite}
+.cosmic-stars:after{transform:scale(1.4);opacity:.3;animation-duration:8s}
+@keyframes starDrift{to{translate:-70px 55px}}
+
+/* Galactic Extinction */
+.galaxy-battle{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(93,48,174,.35),transparent 42%),linear-gradient(#02030b,#05021a)}
+.galaxy-disc{position:absolute;left:50%;top:48%;width:76vw;height:22vw;translate:-50% -50%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.9) 0 1%,#7fd7ff 2%,#6943ff 13%,rgba(109,53,255,.2) 36%,transparent 68%);filter:blur(.2px);transform:rotate(-13deg);box-shadow:0 0 80px rgba(103,73,255,.35);animation:galaxySpin 7s linear infinite}
+@keyframes galaxySpin{to{transform:rotate(347deg)}}
+.fleet-ship{position:absolute;font-size:clamp(20px,3.5vw,55px);filter:drop-shadow(0 0 15px #68d8ff);animation:fleetRush 1.6s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes fleetRush{from{transform:translate3d(-20vw,10vh,0) scale(.25);opacity:.2}to{transform:translate3d(120vw,-20vh,0) scale(1.6);opacity:1}}
+.laser{position:absolute;height:2px;width:55vw;transform-origin:left;background:linear-gradient(90deg,#fff,#54eaff,transparent);box-shadow:0 0 18px #44cfff;animation:laserShot .8s ease-out forwards}
+.laser.enemy{background:linear-gradient(90deg,#fff,#ff55cf,transparent);box-shadow:0 0 18px #ff55cf}
+@keyframes laserShot{0%{transform:scaleX(0)}70%{transform:scaleX(1)}100%{opacity:0}}
+.extinction-flash{position:absolute;left:62%;top:42%;width:30px;height:30px;border-radius:50%;background:#fff;box-shadow:0 0 40px #fff,0 0 90px #ff9a2f,0 0 170px #763cff;animation:extinct 1.4s .55s ease-out forwards;opacity:0}
+@keyframes extinct{0%{opacity:0;transform:scale(.1)}30%{opacity:1}100%{opacity:0;transform:scale(16)}}
+
+/* Black Hole Trap */
+.blackhole-scene{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#09000d 0 7%,#1a092a 8% 18%,#03030b 48%,#010207 100%)}
+.blackhole{position:absolute;left:50%;top:50%;width:min(42vw,420px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:#000;box-shadow:0 0 0 18px rgba(255,160,28,.1),0 0 70px #ff8b19,0 0 180px rgba(126,52,255,.45);animation:holePulse 2.3s ease-in-out infinite alternate}
+.blackhole:before{content:"";position:absolute;inset:-22%;border-radius:50%;background:conic-gradient(from 20deg,transparent 0 7%,#ffcb5b 9%,#ff7517 17%,transparent 31%,#ffe28a 46%,#ff6413 60%,transparent 75%);filter:blur(8px);animation:accretionSpin 1.2s linear infinite;z-index:-1}
+.blackhole:after{content:"";position:absolute;inset:-45% -70%;border-radius:50%;border:9px solid rgba(255,164,36,.55);transform:rotateX(72deg) rotateZ(-14deg);filter:blur(5px);box-shadow:0 0 25px #ff8d20;animation:accretionSpin 1.8s linear infinite reverse}
+@keyframes accretionSpin{to{rotate:360deg}}@keyframes holePulse{to{transform:scale(1.08)}}
+.trapped-ship{position:absolute;left:14%;top:58%;font-size:48px;animation:trapOrbit 2.2s cubic-bezier(.3,.8,.2,1) forwards;filter:drop-shadow(0 0 15px var(--cosmic-blue))}
+@keyframes trapOrbit{0%{transform:translate(0,0) rotate(0) scale(1)}50%{transform:translate(32vw,-20vh) rotate(190deg) scale(.7)}100%{transform:translate(44vw,-5vh) rotate(580deg) scale(.05);opacity:0}}
+
+/* Wormhole flanking maneuver */
+.wormhole-scene{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#20103c,#040716 50%,#01030a)}
+.wormhole{position:absolute;left:50%;top:50%;width:min(56vw,560px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:repeating-conic-gradient(from 0deg,#72e8ff 0 5deg,#6d39ff 8deg 13deg,#d76dff 16deg 20deg,#071024 23deg 28deg);mask:radial-gradient(circle,transparent 0 24%,#000 26%);filter:drop-shadow(0 0 35px #6f56ff);animation:wSpin .9s linear infinite}
+@keyframes wSpin{to{rotate:360deg}}
+.tear{position:absolute;left:50%;top:50%;translate:-50% -50%;width:4px;height:80vh;background:#fff;box-shadow:0 0 15px #fff,0 0 40px #72e8ff,0 0 90px #8b4fff;animation:tearOpen 1.1s cubic-bezier(.15,.9,.2,1) forwards}
+@keyframes tearOpen{0%{height:0;opacity:0}50%{height:80vh;opacity:1}100%{width:36vw;height:90vh;opacity:.15;filter:blur(12px)}}
+.flank-ship{position:absolute;right:-15%;top:40%;font-size:60px;animation:flankIn 1.5s .45s cubic-bezier(.15,.85,.2,1) forwards;filter:drop-shadow(0 0 16px #67dfff)}
+@keyframes flankIn{to{right:58%;top:30%;transform:scale(.75) rotate(-12deg)}}
+
+/* Chrono jump */
+.chrono-scene{position:absolute;inset:0;background:radial-gradient(circle,#19103e,#030612 70%)}
+.chrono-ring{position:absolute;left:50%;top:50%;translate:-50% -50%;border-radius:50%;border:2px solid rgba(100,220,255,.7);box-shadow:0 0 22px #5ddfff,inset 0 0 22px #7d4cff;animation:chronoRing 1.35s ease-out forwards}
+@keyframes chronoRing{0%{width:20px;height:20px;opacity:1}100%{width:120vw;height:120vw;opacity:0}}
+.chrono-fleet{position:absolute;inset:0;display:grid;place-items:center;perspective:900px}
+.chrono-fleet span{position:absolute;font-size:48px;opacity:0;filter:drop-shadow(0 0 14px #6fe6ff);animation:chronoShip 1.5s cubic-bezier(.1,.9,.2,1) forwards}
+@keyframes chronoShip{0%{opacity:0;transform:translateZ(-900px) scale(.05)}55%{opacity:1}100%{opacity:1;transform:translateZ(0) scale(1)}}
+.time-streaks{position:absolute;inset:-30%;background:repeating-radial-gradient(circle at 50% 50%,transparent 0 24px,rgba(99,219,255,.12) 25px 27px);animation:timeRush .8s linear infinite}
+@keyframes timeRush{to{transform:scale(1.7)}}
+
+/* Colliding singularities */
+.singularity-scene{position:absolute;inset:0;background:radial-gradient(circle,#160723,#02030a 68%)}
+.singularity{position:absolute;top:50%;width:170px;height:170px;border-radius:50%;background:#000;translate:0 -50%;box-shadow:0 0 55px #8c4cff;animation:singularityCollide 1.65s cubic-bezier(.5,0,.5,1) forwards}
+.singularity.left{left:-10%;box-shadow:0 0 35px #5bdcff,0 0 95px #593cff}.singularity.right{right:-10%;box-shadow:0 0 35px #ff8b25,0 0 95px #ff6a17;animation-name:singularityCollideR}
+.singularity:before{content:"";position:absolute;inset:-28%;border-radius:50%;border:10px solid rgba(255,255,255,.3);filter:blur(5px);animation:accretionSpin 1s linear infinite}
+@keyframes singularityCollide{to{left:calc(50% - 85px);transform:scale(1.25)}}@keyframes singularityCollideR{to{right:calc(50% - 85px);transform:scale(1.25)}}
+.collision-burst{position:absolute;left:50%;top:50%;translate:-50% -50%;width:10px;height:10px;border-radius:50%;background:white;box-shadow:0 0 30px white,0 0 90px #ffaf35,0 0 150px #844fff;opacity:0;animation:collisionBurst .85s 1.4s ease-out forwards}
+@keyframes collisionBurst{0%{opacity:1;transform:scale(.2)}100%{opacity:0;transform:scale(70)}}
+
+/* Interaction FX cue */
+.interaction-cue{position:fixed;z-index:165;pointer-events:none;width:12px;height:12px;border-radius:50%;border:2px solid var(--cyan);translate:-50% -50%;animation:cueBurst .55s ease-out forwards}
+@keyframes cueBurst{to{width:130px;height:130px;opacity:0;border-width:1px}}
+body.cinema-lock{overflow:hidden}
+@media(max-width:620px){.reveal-logo,.sonic-word{letter-spacing:-3px}.blackhole{width:58vw}.fleet-ship,.flank-ship,.trapped-ship{font-size:40px}}
+
+
+/* === NOVA BACKGROUND REFRESH === */
+body{
+  background:
+    radial-gradient(900px 600px at 8% 10%,rgba(87,207,255,.14),transparent 64%),
+    radial-gradient(950px 680px at 92% 14%,rgba(170,92,255,.15),transparent 66%),
+    radial-gradient(700px 520px at 50% 100%,rgba(0,255,196,.08),transparent 70%),
+    linear-gradient(160deg,#02050c 0%,#071226 38%,#0b1230 62%,#030712 100%) !important;
+}
+body:before{
+  content:"";position:fixed;inset:-12%;z-index:-4;pointer-events:none;opacity:.58;
+  background:
+    conic-gradient(from 20deg at 28% 34%,transparent 0 18%,rgba(62,174,255,.13) 21%,transparent 29% 100%),
+    conic-gradient(from 220deg at 74% 38%,transparent 0 20%,rgba(173,86,255,.12) 24%,transparent 33% 100%),
+    radial-gradient(ellipse at 50% 100%,rgba(73,255,218,.08),transparent 52%);
+  filter:blur(32px);
+  animation:novaDrift 16s ease-in-out infinite alternate;
+}
+body:after{
+  content:"";position:fixed;left:0;right:0;bottom:0;height:32vh;z-index:-3;pointer-events:none;
+  background:
+    linear-gradient(to top,rgba(8,28,47,.72),transparent 72%),
+    repeating-linear-gradient(90deg,rgba(94,231,255,.05) 0 1px,transparent 1px 72px);
+  mask-image:linear-gradient(to top,#000,transparent);
+}
+@keyframes novaDrift{
+  0%{transform:translate3d(-2%,-1%,0) rotate(-2deg) scale(1.02)}
+  100%{transform:translate3d(3%,2%,0) rotate(3deg) scale(1.08)}
+}
+.nova-horizon{
+  position:fixed;left:8%;right:8%;bottom:8vh;height:1px;z-index:-2;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(94,231,255,.55),rgba(175,102,255,.5),transparent);
+  box-shadow:0 0 34px rgba(94,231,255,.25),0 0 70px rgba(155,123,255,.16);
+}
+
+</style>
+</head>
+<body>
+<div class="nova-horizon"></div>
+<div class="cinematic-stage" id="cinematicStage"></div>
+<div class="cinema-menu glass" id="cinemaMenu">
+<button onclick="playCinematic('eco')">🌱 Smart Eco-City & Space Horizon</button>
+<button onclick="playCinematic('pastel')">🧸 Playful 3D Pastel Studio</button>
+<button onclick="playCinematic('holiday')">✨ Magical Holiday POV Animation</button>
+<button onclick="playCinematic('digital')">🧬 Futuristic Digital Reveal (3D Motion)</button>
+<button onclick="playCinematic('takeoff')">✈️ The Takeoff Transition</button>
+<button onclick="playCinematic('jet')">🛩️ The Jet Flyby</button>
+<button onclick="playCinematic('sonic')">💥 Sonic Boom Reveal</button>
+</div><div class="cinema-dock"><button class="cinema-btn" onclick="toggleCinemaMenu()" title="Cinematic Motion Lab">🎥</button></div>
+<canvas id="stars"></canvas><div class="noise"></div><div class="blob one"></div><div class="blob two"></div><div class="liquid-transition" id="liquid"></div>
+<div class="loading" id="loading"><div><div class="loader-core"></div><p id="loadingText">Contacting knowledge network…</p></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="onboard" id="onboard">
+  <div class="onboard-card glass" id="onboardCard">
+    <div class="spatial"></div>
+    <div class="eyebrow"><span class="pulse"></span> Contextual Spatial Onboarding</div>
+    <h2 id="onboardTitle">Welcome to <span class="gradient-text">KnowledgeVerse 2500</span></h2>
+    <p id="onboardText">A living knowledge interface with online questions, anti-repeat memory, elastic physics, spatial motion and cinematic cosmic transitions. Designed & made by Rahul Singh.</p>
+    <div class="stepdots" id="stepdots"><i class="active"></i><i></i><i></i></div>
+    <button class="btn primary" id="onboardNext">Enter the Verse →</button>
+  </div>
+</div>
+
+<div class="shell">
+<header class="topbar glass">
+  <a class="brand" href="#" onclick="goHome();return false">
+    <div class="logo">KV</div><div><h1>KnowledgeVerse <span style="color:var(--cyan)">2500</span> <span style="font-size:9px;color:var(--green)">INDIA FIX</span></h1><small>Designed & Made by Rahul Singh</small></div>
+  </a>
+  <div class="nav">
+    <button class="chip" onclick="showHistory()">History</button>
+    <button class="chip" onclick="requestMotion()">🎬 Motion</button>
+    <span class="chip" id="networkStatus">● ONLINE</span>
+  </div>
+</header>
+
+<main id="homeView">
+<section class="hero">
+  <div>
+    <div class="eyebrow"><span class="pulse"></span> KNOWLEDGE ENGINE • YEAR 2500 • QUANTUM CINEMATIC INTERFACE</div>
+    <h2>Enter the <span class="gradient-text">Nova Knowledge Grid.</span></h2>
+    <p>Questions are fetched from real online trivia databases and rejected if their ID or normalized question fingerprint has already been seen in this browser. Your progress memory persists across refreshes.</p>
+    <div class="setting-row">
+      <select id="quizSize" class="select"><option value="10">10 Questions</option><option value="20">20 Questions</option><option value="30">30 Questions</option><option value="40">40 Questions</option><option value="50">50 Questions</option></select>
+      <select id="difficulty" class="select"><option value="">Mixed Difficulty</option><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select>
+    </div>
+    <div class="hero-actions">
+      <button class="btn primary" onclick="startCourse('General Knowledge')">Launch Instant Quiz</button>
+      <button class="btn ghost" onclick="document.getElementById('courses').scrollIntoView()">Explore Courses ↓</button><button class="btn ghost" onclick="toggleCinemaMenu()">🎥 Cinematic Motion Lab</button>
+    </div>
+    <div class="source-badge">Online engine: The Trivia API + Open Trivia DB • anti-repeat local memory enabled</div>
+  </div>
+  <div class="orbit-stage" id="orbitStage">
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="orbit-core"></div>
+    <div class="orbital o1">INDIA / IST<b id="tIST">--:--</b></div>
+    <div class="orbital o2">UTC CORE<b id="tUTC">--:--</b></div>
+    <div class="orbital o3">TOKYO<b id="tTokyo">--:--</b></div>
+    <div class="orbital o4">NEW YORK<b id="tNY">--:--</b></div>
+  </div>
+</section>
+
+<section>
+  <div class="dashboard">
+    <div class="stat glass"><b id="statTests">0</b><span>COMPLETED MISSIONS</span></div>
+    <div class="stat glass"><b id="statSeen">0</b><span>UNIQUE QUESTIONS SEEN</span></div>
+    <div class="stat glass"><b id="statBest">0%</b><span>BEST ACCURACY</span></div>
+    <div class="stat glass"><b id="statSource">2</b><span>ONLINE KNOWLEDGE SOURCES</span></div>
+  </div>
+</section>
+
+<section id="courses">
+  <div class="section-head"><div><h3>Learning Galaxies</h3><p>Interactive physics cards • pointer + gyroscope parallax</p></div><button class="btn ghost" onclick="clearHistoryPrompt()">Reset seen history</button></div>
+  <div class="grid" id="courseGrid"></div>
+</section>
+</main>
+
+<section id="quizView">
+  <div class="panel glass quiz-layout">
+    <div>
+      <div class="qtop"><div><small id="qCourse" style="color:var(--cyan)"></small><div id="qCounter"></div></div><button class="btn danger" onclick="goHome()">Exit</button></div>
+      <div class="progress"><i id="qProgress"></i></div>
+      <div class="qtext" id="qText"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="navq"><button class="btn ghost" onclick="prevQ()">← Previous</button><button class="btn primary" id="nextBtn" onclick="nextQ()">Next →</button></div>
+    </div>
+    <aside class="quiz-side">
+      <div class="sidebox glass"><small>MISSION TIMER</small><b id="timer">00:00</b></div>
+      <div class="sidebox glass"><small>ANSWERED</small><b id="answered">0</b></div>
+      <div class="sidebox glass"><small>SOURCE</small><b id="sourceName" style="font-size:13px">ONLINE</b></div>
+    </aside>
+  </div>
+</section>
+
+<section id="resultView">
+  <div class="panel glass result-hero">
+    <div class="eyebrow"><span class="pulse"></span> MISSION COMPLETE • RAHUL SINGH</div>
+    <h2>Knowledge Signal Analyzed</h2>
+    <div class="score-ring" id="scoreRing"><b id="scorePct">0%</b></div>
+    <p id="scoreLine" style="color:var(--muted)"></p>
+    <div class="hero-actions" style="justify-content:center"><button class="btn primary" onclick="savePDF()">Save Result PDF</button><button class="btn ghost" onclick="retryCourse()">New Unique Set</button><button class="btn ghost" onclick="goHome()">Home</button></div>
+    <div class="review" id="review"></div>
+  </div>
+</section>
+
+<section id="historyView">
+  <div class="section-head"><div><h3>Mission Archive</h3><p>Your local KnowledgeVerse result history</p></div><button class="btn ghost" onclick="goHome()">Back</button></div>
+  <div id="historyList" class="review"></div>
+</section>
+
+<footer class="footer">
+  KnowledgeVerse 2500 • Designed & Made by Rahul Singh<br>
+  Runtime question sources: <a href="https://the-trivia-api.com/" target="_blank" rel="noopener">The Trivia API</a> and <a href="https://opentdb.com/" target="_blank" rel="noopener">Open Trivia DB</a>.<br>
+  The Trivia API free data is CC BY-NC 4.0 (non-commercial); Open Trivia DB data is CC BY-SA 4.0. Source data remains subject to provider terms.
+</footer>
+</div>
+
+<script>
+const COURSES={
+  "AI & Future Tech":{icon:"🧠",desc:"Computing, emerging tech and future-facing science.",trivia:"science",otdb:18},
+  "Computer Master":{icon:"💻",desc:"Computers, hardware, software and digital systems.",trivia:"science",otdb:18},
+  "Cyber Security":{icon:"🛡️",desc:"Technology-focused challenges with secure-thinking context.",trivia:"science",otdb:18},
+  "Coding Master":{icon:"⌨️",desc:"Programming and computer-science knowledge.",trivia:"science",otdb:18},
+  "Maths Master":{icon:"∞",desc:"Mathematics and problem-solving knowledge.",trivia:"science",otdb:19},
+  "Science Master":{icon:"⚛️",desc:"Physics, biology, chemistry and nature.",trivia:"science",otdb:17},
+  "General Knowledge":{icon:"🌐",desc:"Wide-spectrum verified trivia from across domains.",trivia:"general_knowledge",otdb:9},
+  "General Knowledge India":{icon:"🇮🇳",desc:"India-only GK: Indian history, geography, culture, civics and national facts.",trivia:"general_knowledge,history,geography,society_and_culture",indiaOnly:true,indiaTag:"india",otdb:null},
+  "Space Master":{icon:"🪐",desc:"Science and astronomy-oriented question stream.",trivia:"science",otdb:17},
+  "India & World":{icon:"🇮🇳",desc:"Geography, history and world-awareness stream.",trivia:"geography,history",otdb:22},
+  "History Master":{icon:"🏛️",desc:"Civilizations, events, people and eras.",trivia:"history",otdb:23},
+  "Culture & Society":{icon:"🎭",desc:"Society, culture, arts and literature.",trivia:"society_and_culture,arts_and_literature",otdb:25},
+  "Entertainment":{icon:"🎬",desc:"Film, television, music and pop culture.",trivia:"film_and_tv,music",otdb:11}
+};
+
+let state={course:"",questions:[],answers:[],i:0,start:0,timer:null,provider:"",last:null};
+const LS={seenIds:"kv2500_seen_ids",seenHashes:"kv2500_seen_hashes",history:"kv2500_history",onboard:"kv2500_onboard",token:"kv2500_otdb_token"};
+const getJSON=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
+const saveJSON=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function norm(s){return decodeHTML(s).toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(36)}
+function decodeHTML(s){const t=document.createElement("textarea");t.innerHTML=s;return t.value}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2400)}
+function showLoading(v,text="Contacting knowledge network…"){document.getElementById("loading").classList.toggle("show",v);document.getElementById("loadingText").textContent=text}
+function transition(fn){const l=document.getElementById("liquid");l.classList.add("active");setTimeout(()=>{fn();setTimeout(()=>l.classList.remove("active"),90)},470)}
+function showView(id){["homeView","quizView","resultView","historyView"].forEach(x=>document.getElementById(x).style.display=x===id?"block":"none");scrollTo(0,0)}
+function goHome(){clearInterval(state.timer);transition(()=>{showView("homeView");updateStats()})}
+
+function renderCourses(){
+ const g=document.getElementById("courseGrid");g.innerHTML="";
+ Object.entries(COURSES).forEach(([name,c],n)=>{
+  const d=document.createElement("article");d.className="course glass physics";d.innerHTML=`<div class="icon">${c.icon}</div><h4>${name}</h4><p>${c.desc}</p><div class="meta"><span>NO-REPEAT ENGINE</span><span>${c.indiaOnly?"INDIA ONLY":"ONLINE"}</span></div>`;
+  d.onclick=()=>startCourse(name);g.appendChild(d);attachPhysics(d,n);
+ });
+}
+function attachPhysics(el,seed=0){
+ let tx=0,ty=0,rx=0,ry=0,vx=0,vy=0,raf=0;
+ const spring=()=>{
+   vx+=(tx-rx)*.09;vy+=(ty-ry)*.09;vx*=.72;vy*=.72;rx+=vx;ry+=vy;
+   const gx=Number(getComputedStyle(document.documentElement).getPropertyValue("--gx"))||0;
+   const gy=Number(getComputedStyle(document.documentElement).getPropertyValue("--gy"))||0;
+   el.style.transform=`perspective(850px) rotateX(${(-ry+gy*.25).toFixed(2)}deg) rotateY(${(rx+gx*.25).toFixed(2)}deg) translateZ(0)`;
+   if(Math.abs(tx-rx)+Math.abs(ty-ry)+Math.abs(vx)+Math.abs(vy)>.02)raf=requestAnimationFrame(spring);else raf=0;
+ };
+ const kick=()=>{if(!raf)raf=requestAnimationFrame(spring)};
+ el.addEventListener("pointermove",e=>{const r=el.getBoundingClientRect();tx=((e.clientX-r.left)/r.width-.5)*11;ty=((e.clientY-r.top)/r.height-.5)*9;kick()});
+ el.addEventListener("pointerleave",()=>{tx=ty=0;kick()});
+}
+
+async function requestMotion(){
+ if(typeof DeviceOrientationEvent!=="undefined"&&typeof DeviceOrientationEvent.requestPermission==="function"){
+   try{const p=await DeviceOrientationEvent.requestPermission();if(p!=="granted")return toast("Motion permission not granted")}catch(e){return toast("Motion permission unavailable")}
+ }
+ window.addEventListener("deviceorientation",e=>{
+   const g=Math.max(-20,Math.min(20,e.gamma||0))/20*8,b=Math.max(-20,Math.min(20,(e.beta||0)-45))/20*7;
+   document.documentElement.style.setProperty("--gx",g);document.documentElement.style.setProperty("--gy",b);
+   document.getElementById("orbitStage").style.transform=`perspective(900px) rotateX(${-b*.35}deg) rotateY(${g*.35}deg)`;
+ },{passive:true});
+ toast("Gyroscope spatial motion enabled");
+}
+
+async function getOTDBToken(){
+ let token=localStorage.getItem(LS.token);
+ if(token)return token;
+ try{
+  const r=await fetch("https://opentdb.com/api_token.php?command=request");
+  const j=await r.json();
+  if(j.response_code===0){localStorage.setItem(LS.token,j.token);return j.token}
+ }catch(e){}
+ return "";
+}
+function convertTrivia(x){
+ const q=typeof x.question==="string"?x.question:(x.question&&x.question.text?x.question.text:"");
+ const correct=x.correctAnswer||"";
+ const opts=shuffle([correct,...(x.incorrectAnswers||[])]);
+ return {id:"ta:"+x.id,q,opts,correct:opts.indexOf(correct),difficulty:x.difficulty||"mixed",category:x.category||"",tags:x.tags||[],regions:x.regions||[],source:"The Trivia API"};
+}
+function isIndiaQuestion(x){
+ const tags=(x.tags||[]).map(v=>String(v).toLowerCase().replace(/[^a-z0-9]+/g,"_"));
+ return tags.includes("india") || tags.some(t=>t.startsWith("india_")||t.startsWith("indian_"));
+}
+function convertOTDB(x){
+ const q=decodeHTML(x.question),correct=decodeHTML(x.correct_answer),opts=shuffle([correct,...x.incorrect_answers.map(decodeHTML)]);
+ return {id:"ot:"+hash(norm(q)),q,opts,correct:opts.indexOf(correct),difficulty:x.difficulty||"mixed",category:decodeHTML(x.category||""),source:"Open Trivia DB"};
+}
+function unseenOnly(arr){
+ const ids=new Set(getJSON(LS.seenIds,[])),hs=new Set(getJSON(LS.seenHashes,[]));
+ const local=new Set();
+ return arr.filter(x=>{const h=hash(norm(x.q));if(ids.has(x.id)||hs.has(h)||local.has(h))return false;local.add(h);return true});
+}
+function markSeen(arr){
+ let ids=getJSON(LS.seenIds,[]),hs=getJSON(LS.seenHashes,[]);
+ const I=new Set(ids),H=new Set(hs);
+ arr.forEach(x=>{I.add(x.id);H.add(hash(norm(x.q)))});
+ saveJSON(LS.seenIds,[...I].slice(-30000));saveJSON(LS.seenHashes,[...H].slice(-30000));
+}
+async function fetchTrivia(course,need){
+ const c=COURSES[course],diff=document.getElementById("difficulty").value;
+ const params=new URLSearchParams({limit:String(Math.min(50,Math.max(need*3,30))),categories:c.trivia});
+ if(diff)params.set("difficulties",diff);
+ if(c.indiaOnly){
+   params.set("tags",c.indiaTag||"india");
+   params.set("region","IN");
+ }
+ const r=await fetch("https://the-trivia-api.com/v2/questions?"+params.toString());
+ if(!r.ok)throw new Error("Trivia API unavailable");
+ const j=await r.json();
+ let items=j.map(convertTrivia).filter(x=>x.q&&x.opts.length>=2);
+ if(c.indiaOnly)items=items.filter(isIndiaQuestion);
+ return unseenOnly(items);
+}
+async function fetchOTDB(course,need){
+ const c=COURSES[course],diff=document.getElementById("difficulty").value,token=await getOTDBToken();
+ const params=new URLSearchParams({amount:String(Math.min(50,Math.max(need*2,20))),type:"multiple",category:String(c.otdb)});
+ if(diff)params.set("difficulty",diff);if(token)params.set("token",token);
+ const r=await fetch("https://opentdb.com/api.php?"+params.toString());if(!r.ok)throw new Error("OpenTDB unavailable");
+ const j=await r.json();
+ if(j.response_code===4)throw new Error("OpenTDB category exhausted for current token");
+ if(j.response_code!==0)return [];
+ return unseenOnly(j.results.map(convertOTDB));
+}
+async function collectUnique(course,need){
+ let found=[],round=0,errors=[];
+ const indiaOnly=!!COURSES[course].indiaOnly;
+ while(found.length<need && round<5){
+  round++;
+  try{
+    const batch=await fetchTrivia(course,need-found.length);
+    const existing=new Set(found.map(x=>hash(norm(x.q))));
+    found.push(...batch.filter(x=>!existing.has(hash(norm(x.q)))));
+  }catch(e){errors.push(e.message)}
+  if(found.length>=need)break;
+  // India GK NEVER falls back to generic world questions.
+  if(!indiaOnly && round===1){
+   try{
+    const batch=await fetchOTDB(course,need-found.length);
+    const existing=new Set(found.map(x=>hash(norm(x.q))));
+    found.push(...batch.filter(x=>!existing.has(hash(norm(x.q)))));
+   }catch(e){errors.push(e.message)}
+  }
+  if(found.length<need)await new Promise(r=>setTimeout(r,650));
+ }
+ found=unseenOnly(found).slice(0,need);
+ if(!found.length){
+   if(indiaOnly)throw new Error("No unseen India-only GK questions are available right now. Generic world GK was NOT inserted. Try again later or reset seen history.");
+   throw new Error(errors[0]||"No unseen questions returned. Try another course or reset history manually.");
+ }
+ return found;
+}
+
+async function startCourse(course){
+ if(!navigator.onLine)return toast("Online question engine needs internet.");
+ const need=Number(document.getElementById("quizSize").value);
+ showLoading(true,course==="General Knowledge India"?"Finding India-only unseen GK questions…":"Finding unseen questions for "+course+"…");
+ try{
+  let qs=await collectUnique(course,need);
+  if(qs.length<need)toast(`Found ${qs.length} unseen questions right now. No repeats were inserted.`);
+  markSeen(qs);
+  state.course=course;state.questions=qs;state.answers=Array(qs.length).fill(null);state.i=0;state.start=Date.now();state.provider=[...new Set(qs.map(x=>x.source))].join(" + ");
+  clearInterval(state.timer);state.timer=setInterval(updateTimer,1000);
+  transition(()=>{showView("quizView");renderQuestion();updateTimer()});
+ }catch(e){toast(e.message)}
+ finally{showLoading(false)}
+}
+function renderQuestion(){
+ const x=state.questions[state.i];if(!x)return;
+ document.getElementById("qCourse").textContent=state.course+" • "+x.difficulty.toUpperCase();
+ document.getElementById("qCounter").textContent=`Question ${state.i+1} / ${state.questions.length}`;
+ document.getElementById("qProgress").style.width=((state.i+1)/state.questions.length*100)+"%";
+ document.getElementById("qText").textContent=x.q;
+ document.getElementById("sourceName").textContent=x.source;
+ document.getElementById("answered").textContent=state.answers.filter(v=>v!==null).length;
+ const box=document.getElementById("qOptions");box.innerHTML="";
+ x.opts.forEach((o,i)=>{const b=document.createElement("button");b.className="option"+(state.answers[state.i]===i?" selected":"");b.textContent=String.fromCharCode(65+i)+". "+o;b.onclick=()=>{state.answers[state.i]=i;renderQuestion()};box.appendChild(b)});
+ document.getElementById("nextBtn").textContent=state.i===state.questions.length-1?"Finish Mission":"Next →";
+}
+function nextQ(){if(state.i<state.questions.length-1){state.i++;renderQuestion()}else finishQuiz()}
+function prevQ(){if(state.i>0){state.i--;renderQuestion()}}
+function updateTimer(){document.getElementById("timer").textContent=fmt(Math.floor((Date.now()-state.start)/1000))}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function finishQuiz(){
+ clearInterval(state.timer);let correct=0;state.questions.forEach((x,i)=>{if(state.answers[i]===x.correct)correct++});
+ const pct=Math.round(correct/state.questions.length*100),elapsed=Math.floor((Date.now()-state.start)/1000);
+ state.last={course:state.course,correct,total:state.questions.length,pct,elapsed,date:new Date().toLocaleString(),questions:state.questions,answers:state.answers,provider:state.provider};
+ let h=getJSON(LS.history,[]);h.unshift({course:state.course,correct,total:state.questions.length,pct,elapsed,date:state.last.date,provider:state.provider});saveJSON(LS.history,h.slice(0,100));
+ transition(()=>{showView("resultView");document.getElementById("scorePct").textContent=pct+"%";document.getElementById("scoreRing").style.background=`conic-gradient(var(--cyan) ${pct*3.6}deg,#102039 0deg)`;document.getElementById("scoreLine").textContent=`${correct}/${state.questions.length} correct • ${fmt(elapsed)} • ${state.provider}`;renderReview();updateStats()});
+}
+function renderReview(){
+ const r=document.getElementById("review");r.innerHTML="<h3 style='text-align:left'>Answer Review</h3>";
+ state.questions.forEach((x,i)=>{const good=state.answers[i]===x.correct,d=document.createElement("div");d.className="review-item "+(good?"good":"bad");const your=state.answers[i]===null?"Not answered":x.opts[state.answers[i]];d.innerHTML=`<b>${i+1}. ${escapeHTML(x.q)}</b><br>Your answer: ${escapeHTML(your)}<br>Correct: ${escapeHTML(x.opts[x.correct])}<br><small>${escapeHTML(x.source)} • ${escapeHTML(x.category)}</small>`;r.appendChild(d)});
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function retryCourse(){await startCourse(state.course)}
+function showHistory(){transition(()=>{showView("historyView");const h=getJSON(LS.history,[]),b=document.getElementById("historyList");b.innerHTML=h.length?"":"<div class='review-item'>No completed missions yet.</div>";h.forEach(x=>{const d=document.createElement("div");d.className="review-item";d.innerHTML=`<b>${escapeHTML(x.course)} — ${x.pct}%</b><br>${x.correct}/${x.total} correct • ${fmt(x.elapsed)} • ${escapeHTML(x.date)}<br><small>${escapeHTML(x.provider||"Online")}</small>`;b.appendChild(d)})})}
+function updateStats(){const h=getJSON(LS.history,[]),seen=getJSON(LS.seenHashes,[]);document.getElementById("statTests").textContent=h.length;document.getElementById("statSeen").textContent=seen.length.toLocaleString();document.getElementById("statBest").textContent=(h.length?Math.max(...h.map(x=>x.pct)):0)+"%"}
+function clearHistoryPrompt(){if(confirm("Reset seen-question memory? This can allow old questions to appear again.")){localStorage.removeItem(LS.seenIds);localStorage.removeItem(LS.seenHashes);localStorage.removeItem(LS.token);updateStats();toast("Seen-question memory reset by you.")}}
+
+function pdfEscape(s){return String(s).replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)").replace(/[^\x20-\x7E]/g," ")}
+function createPDF(lines){
+ let content="BT\n/F1 17 Tf\n50 790 Td\n";lines.forEach((l,i)=>{if(i)content+="0 -22 Td\n";content+=`(${pdfEscape(l)}) Tj\n`});content+="ET";
+ const o=[];o[1]="<< /Type /Catalog /Pages 2 0 R >>";o[2]="<< /Type /Pages /Kids [3 0 R] /Count 1 >>";o[3]="<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>";o[4]=`<< /Length ${content.length} >>\nstream\n${content}\nendstream`;o[5]="<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
+ let p="%PDF-1.4\n",off=[0];for(let i=1;i<=5;i++){off[i]=p.length;p+=`${i} 0 obj\n${o[i]}\nendobj\n`}const x=p.length;p+="xref\n0 6\n0000000000 65535 f \n";for(let i=1;i<=5;i++)p+=String(off[i]).padStart(10,"0")+" 00000 n \n";p+=`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${x}\n%%EOF`;return p;
+}
+function savePDF(){if(!state.last)return;const x=state.last,lines=["KnowledgeVerse 2500 Result","Designed & Made by Rahul Singh","",`Course: ${x.course}`,`Score: ${x.pct}%`,`Correct: ${x.correct}/${x.total}`,`Time: ${fmt(x.elapsed)}`,`Source: ${x.provider}`,`Date: ${x.date}`,"","Anti-repeat memory: enabled"];const blob=new Blob([createPDF(lines)],{type:"application/pdf"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="KnowledgeVerse_2500_Result_Rahul_Singh.pdf";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+
+function clocks(){const now=new Date(),f=z=>new Intl.DateTimeFormat("en-GB",{timeZone:z,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(now);tIST.textContent=f("Asia/Kolkata");tUTC.textContent=f("UTC");tTokyo.textContent=f("Asia/Tokyo");tNY.textContent=f("America/New_York")}
+setInterval(clocks,1000);clocks();
+
+window.addEventListener("pointermove",e=>{document.documentElement.style.setProperty("--mx",(e.clientX-innerWidth/2)*.025);document.documentElement.style.setProperty("--my",(e.clientY-innerHeight/2)*.025)},{passive:true});
+window.addEventListener("online",()=>networkStatus.textContent="● ONLINE");window.addEventListener("offline",()=>networkStatus.textContent="● OFFLINE");
+
+(function stars(){
+ const c=document.getElementById("stars"),x=c.getContext("2d");let w,h,s=[];
+ function resize(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio;s=Array.from({length:Math.min(230,Math.floor(innerWidth/5))},()=>({x:Math.random()*w,y:Math.random()*h,z:Math.random()*1+.2,r:Math.random()*1.4+.25}))}
+ function draw(){x.clearRect(0,0,w,h);x.fillStyle="rgba(180,225,255,.6)";s.forEach(p=>{p.y+=p.z*.14*devicePixelRatio;if(p.y>h)p.y=0;x.globalAlpha=p.z*.55;x.beginPath();x.arc(p.x,p.y,p.r*devicePixelRatio,0,7);x.fill()});requestAnimationFrame(draw)}
+ addEventListener("resize",resize);resize();draw()
+})();
+
+let onStep=0;const onboarding=[
+ ["Welcome to KnowledgeVerse 2500","A living knowledge interface with online questions, anti-repeat memory, elastic physics, spatial motion and cinematic cosmic transitions. Designed & made by Rahul Singh."],
+ ["Spatial motion, not decoration","Move your pointer across course cards or enable phone motion. The interface responds with spring physics and gyroscope-driven 3D parallax."],
+ ["No-repeat knowledge memory","Every accepted online question gets an ID/text fingerprint stored in your browser. Seen questions are rejected instead of silently repeating."]
+];
+function onboardRender(){onboardTitle.innerHTML=onboarding[onStep][0].replace("KnowledgeVerse 2500","<span class='gradient-text'>KnowledgeVerse 2500</span>");onboardText.textContent=onboarding[onStep][1];[...stepdots.children].forEach((d,i)=>d.classList.toggle("active",i===onStep));onboardNext.textContent=onStep===2?"Enter KnowledgeVerse →":"Continue →"}
+onboardNext.onclick=()=>{if(onStep<2){onStep++;onboardRender()}else{localStorage.setItem(LS.onboard,"1");onboard.classList.add("hidden")}};
+if(localStorage.getItem(LS.onboard))onboard.classList.add("hidden");onboardRender();
+
+function toggleCinemaMenu(){document.getElementById('cinemaMenu').classList.toggle('show')}
+function closeCinemaMenu(){document.getElementById('cinemaMenu').classList.remove('show')}
+function buildSnow(){let h='';for(let i=0;i<70;i++){const l=Math.random()*100,d=3+Math.random()*5,dl=Math.random()*1.8,z=10+Math.random()*18;h+=`<span class="snowflake" style="left:${l}%;animation-duration:${d}s;animation-delay:${dl}s;font-size:${z}px">❄</span>`}return h}
+function playCinematic(type){closeCinemaMenu();const st=document.getElementById('cinematicStage');let h='',t='',d=2200;
+if(type==='eco'){t='Smart Eco-City & Space Horizon';h=`<div class="eco-city"><div class="eco-sun"></div><div class="eco-horizon"></div><div class="eco-orbit"></div><div class="eco-building" style="left:8%;height:28%"></div><div class="eco-building" style="left:18%;height:36%"></div><div class="eco-building" style="left:29%;height:24%"></div><div class="eco-building" style="left:40%;height:42%"></div><div class="eco-building" style="left:53%;height:32%"></div><div class="eco-building" style="left:66%;height:39%"></div><div class="eco-building" style="left:79%;height:27%"></div><div class="eco-tree" style="left:12%"></div><div class="eco-tree" style="left:34%"></div><div class="eco-tree" style="left:61%"></div><div class="eco-tree" style="left:88%"></div><div class="eco-lane"></div></div>`;d=2800}
+else if(type==='pastel'){t='Playful 3D Pastel Studio';h=`<div class="pastel-studio"><div class="pastel-floor"></div><div class="pastel-shape pastel-ball" style="width:130px;height:130px;left:16%;top:18%"></div><div class="pastel-shape pastel-cube" style="width:150px;height:150px;right:15%;top:22%"></div><div class="pastel-shape pastel-pill" style="width:210px;height:80px;left:38%;bottom:18%"></div><div class="pastel-shape pastel-ball" style="width:75px;height:75px;right:33%;bottom:12%"></div></div>`;d=2800}
+else if(type==='holiday'){t='Magical Holiday POV';h=`<div class="holiday-pov">${buildSnow()}<div class="holiday-lights"></div><div class="holiday-road"></div><div class="pov-hands"></div></div>`;d=3200}
+else if(type==='digital'){t='Futuristic Digital Reveal';h=`<div class="digital-reveal"><div class="digital-grid"></div><div class="scanline"></div><div class="reveal-logo">KV 2500</div></div>`;d=1900}
+else if(type==='takeoff'){t='The Takeoff Transition';h=`<div class="takeoff-sky"><div class="runway"></div><div class="takeoff-plane">✈️</div></div>`;d=2100}
+else if(type==='jet'){t='The Jet Flyby';h=`<div class="jet-scene"><div class="jet-trail"></div><div class="jet">🛩️</div></div>`;d=1800}
+else if(type==='sonic'){t='Sonic Boom Reveal';h=`<div class="sonic-scene"><div class="sonic-ring"></div><div class="sonic-ring r2"></div><div class="sonic-ring r3"></div><div class="sonic-word">KNOWLEDGEVERSE</div></div>`;d=1700}
+
+ else if(type==='galactic'){
+   t='The Galactic Extinction • Milky Way Battle';d=2500;
+   h=`<div class="galaxy-battle"><div class="cosmic-stars"></div><div class="galaxy-disc"></div>
+      <div class="fleet-ship" style="left:2%;top:32%;animation-delay:.05s">🚀</div><div class="fleet-ship" style="left:4%;top:55%;animation-delay:.25s">🚀</div><div class="fleet-ship" style="left:18%;top:68%;animation-delay:.42s">🛸</div>
+      <div class="laser" style="left:12%;top:38%;rotate:-8deg"></div><div class="laser enemy" style="right:3%;top:58%;rotate:188deg"></div><div class="laser" style="left:25%;top:70%;rotate:-24deg"></div><div class="extinction-flash"></div></div>`;
+ } else if(type==='blackhole'){
+   t='The Black Hole Trap';d=2450;
+   h=`<div class="blackhole-scene"><div class="cosmic-stars"></div><div class="blackhole"></div><div class="trapped-ship">🚀</div></div>`;
+ } else if(type==='wormhole'){
+   t='Wormhole Flanking Maneuver • The Cosmic Tear';d=2350;
+   h=`<div class="wormhole-scene"><div class="cosmic-stars"></div><div class="wormhole"></div><div class="tear"></div><div class="flank-ship">🛸</div></div>`;
+ } else if(type==='chrono'){
+   t='Chrono-Jump Fleet Arrival';d=2200;
+   h=`<div class="chrono-scene"><div class="cosmic-stars"></div><div class="time-streaks"></div><div class="chrono-ring"></div><div class="chrono-ring" style="animation-delay:.18s"></div><div class="chrono-fleet"><span style="left:28%;top:42%;animation-delay:.12s">🚀</span><span style="left:48%;top:33%;animation-delay:.3s">🛸</span><span style="left:63%;top:55%;animation-delay:.46s">🚀</span><span style="left:38%;top:64%;animation-delay:.58s">🛸</span></div></div>`;
+ } else if(type==='singularity'){
+   t='Colliding Singularities • Black Hole vs Wormhole';d=2350;
+   h=`<div class="singularity-scene"><div class="cosmic-stars"></div><div class="singularity left"></div><div class="singularity right"></div><div class="collision-burst"></div></div>`;
+ }
+
+ st.innerHTML=h+`<div class="cinematic-caption">${t} • Rahul Singh</div>`;st.classList.add('active');if(navigator.vibrate&&(type==='sonic'||type==='takeoff'))navigator.vibrate(type==='sonic'?[30,40,80]:[20,30,20]);setTimeout(()=>st.classList.remove('active'),d);setTimeout(()=>st.innerHTML='',d+250)}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('cinematicStage').classList.remove('active');closeCinemaMenu()}})
+
+
+/* === AUTO CINEMATIC INTERACTION ROUTER === */
+const KV_CINEMA_POOL=['digital','takeoff','jet','sonic','eco','pastel','holiday','galactic','blackhole','wormhole','chrono','singularity'];
+let kvCinemaIndex=0,kvReplaying=false,kvCinemaBusy=false;
+function nextCinema(){const x=KV_CINEMA_POOL[kvCinemaIndex%KV_CINEMA_POOL.length];kvCinemaIndex++;return x}
+function cinematicDuration(type){return ({digital:850,takeoff:1050,jet:850,sonic:800,eco:950,pastel:850,holiday:1000,galactic:1200,blackhole:1150,wormhole:1100,chrono:1050,singularity:1100})[type]||900}
+function interactionCue(x,y){const d=document.createElement('i');d.className='interaction-cue';d.style.left=x+'px';d.style.top=y+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),600)}
+function playInteractionCinema(type,done,point){
+ if(kvCinemaBusy){done&&done();return}
+ kvCinemaBusy=true;document.body.classList.add('cinema-lock');if(point)interactionCue(point.x,point.y);
+ playCinematic(type);
+ const wait=cinematicDuration(type);
+ setTimeout(()=>{document.getElementById('cinematicStage').classList.remove('active');document.body.classList.remove('cinema-lock');kvCinemaBusy=false;done&&done()},wait);
+}
+document.addEventListener('click',function(e){
+ if(kvReplaying||e.defaultPrevented)return;
+ const target=e.target.closest('button,a,.course,.chip');if(!target)return;
+ if(target.closest('#cinemaMenu')||target.closest('.cinema-dock'))return;
+ if(target.classList.contains('option'))return;
+ if(target.hasAttribute('data-no-cinema'))return;
+ e.preventDefault();e.stopImmediatePropagation();
+ const pt={x:e.clientX||innerWidth/2,y:e.clientY||innerHeight/2},type=nextCinema();
+ playInteractionCinema(type,()=>{kvReplaying=true;target.click();setTimeout(()=>kvReplaying=false,0)},pt);
+},true);
+// Quiz answers get a fast spatial micro-reveal without slowing the test.
+document.addEventListener('click',function(e){const o=e.target.closest('.option');if(!o||kvReplaying)return;interactionCue(e.clientX,e.clientY);const st=document.getElementById('cinematicStage');st.innerHTML='<div class="digital-reveal" style="background:transparent"><div class="scanline"></div></div>';st.classList.add('active');setTimeout(()=>{st.classList.remove('active');st.innerHTML=''},260)},true);
+
+renderCourses();updateStats();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body>
+</html>
